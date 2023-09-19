@@ -48,26 +48,24 @@ public class ImageService {
     }
 
     @Transactional
-    public List<Image> uploadMemberImage(List<MultipartFile> multipartFileList, Long memberId)throws IOException{
+    public List<Image> uploadMemberImage(MultipartFile multipartFile, Long memberId)throws IOException{
         List<Image> images = new ArrayList();
         Member member = memberService.findVerifiedMember(memberId);
 
-        for (MultipartFile multipartFile : multipartFileList) {
-            // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
-            String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
+        // 파일명 지정 (겹치면 안되고, 확장자 빼먹지 않도록 조심!)
+        String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
 
-            Image image = new Image();
-            image.setName(fileName);
-            // 파일데이터와 파일명 넘겨서 S3에 저장 / 이미지 테이블에 path저장
-            image.setPath(s3Service.upload(multipartFile, "images/member-images/"+fileName));
-            images.add(image);
+        Image image = new Image();
+        image.setName(fileName);
+        // 파일데이터와 파일명 넘겨서 S3에 저장 / 이미지 테이블에 path저장
+        image.setPath(s3Service.upload(multipartFile, "images/member-images/"+fileName));
+        images.add(image);
 
-            member.addProfilePic(image);
+        member.addProfilePic(image);
 
-            // DB에는 전체 url말고 파일명으로 저장할 것임
-            imageRepository.save(image);
+        // DB에는 전체 url말고 파일명으로 저장할 것임
+        imageRepository.save(image);
 
-        }
 
 
         return images;

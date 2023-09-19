@@ -102,7 +102,7 @@ public class MissionService {
 
         Member member = memberService.findVerifiedMember(memberId);
 
-        memberService.verifyIsSameMember(member,loginMember);
+//        memberService.verifyIsSameMember(member,loginMember);
 
         City city = cityRepository.findById(cityId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.CITY_NOT_FOUND));
 
@@ -190,9 +190,10 @@ public class MissionService {
     public List<MemberMission> findMemberMissionsInCity(Long cityId, Long memberId, Long loginMember) {
 
         Member member = memberService.findVerifiedMember(memberId);
-
-        memberService.verifyIsSameMember(member,loginMember);
-
+        Member accessMember = memberService.findVerifiedMember(loginMember);
+        if (!accessMember.getRoles().contains("ADMIN")) {
+            memberService.verifyIsSameMember(member, loginMember);
+        }
         City city = cityRepository.findById(cityId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.CITY_NOT_FOUND));
 
         List<MemberMission> memberMissions = member.getMyMissions().stream().filter(memberMission -> memberMission.getCity().equals(city)).sorted(Comparator.comparing(MemberMission::getCreatedAt))
