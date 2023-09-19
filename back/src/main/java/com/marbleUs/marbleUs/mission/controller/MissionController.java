@@ -56,6 +56,7 @@ public class MissionController {
     public ResponseEntity setCompleteMission(@Positive @PathVariable("member-mission-id") Long id) {
         MemberMission memberMission = service.completeMission(id);
 
+
         return new ResponseEntity<>(mapper.memberMissionToResponse(memberMission), HttpStatus.OK);
     }
 
