@@ -90,6 +90,7 @@ public class SecurityConfiguration {
                 .logoutUrl("/logout")
                 .addLogoutHandler(new CustomLogoutHandler(redisServiceUtil,extractor))
                 .logoutSuccessUrl("http://marbleus-s3.s3-website.ap-northeast-2.amazonaws.com/login");
+
         return http.build();
     }
 
